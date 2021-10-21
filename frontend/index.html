@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        
+        div{
+
+            box-shadow: 10px 5px 5px grey;
+           
+        }
+        #Container{
+            display: grid;
+            grid-template-columns: repeat(4,23%);
+            gap: 2%;
+
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Add Products</h1>
+
+    <div id="Container">
+
+
+
+        <div id="getData">
+
+            <input type="number" id="id0" placeholder="Enter-Id" />
+
+            <button onclick="GetProducts()">Get Product</button>
+
+            <div id="display"></div>
+
+
+        </div>
+
+        <div id="addData">
+            <input type="number" id="id" placeholder="Id" />
+            <input type="text" id="name" placeholder="Name" />
+            <input type="number" id="price" placeholder="Price" />
+            <button onclick="addProducts()">Add Product</button>
+        </div>
+        <div id="delData">
+            <input type="number" id="product_id" placeholder="Id" />
+
+            <button onclick="deleteProduct()">DELETE Product</button>
+        </div>
+
+        <div id="updateData">
+            <input type="number" id="id1" placeholder="Id" />
+            <input type="text" id="name1" placeholder="Name" />
+            <input type="number" id="price1" placeholder="Price" />
+            <button onclick="UpdateProduct()">Update Product</button>
+        </div>
+
+
+
+
+
+
+    </div>
+
+
+
+
+
+</body>
+
+</html>
+
+<script>
+
+    async function GetProducts() {
+
+        let id = document.getElementById("id0").value
+
+        let res = await fetch(`http://localhost:5000/api/products/${id}`)
+        let data = await res.json();
+        console.log("data :", data)
+
+        let parent = document.getElementById("display");
+
+        let Name = document.createElement("p")
+        let Price = document.createElement("p")
+
+        Name.textContent = "Name : " + data.name
+        Price.textContent = "Price :" + data.price
+
+
+        parent.append("ID :"+id,Name, Price)
+    }
+
+
+
+    async function addProducts() {
+        let data = {
+            id: document.getElementById("id").value,
+            name: document.getElementById("name").value,
+            price: document.getElementById("price").value
+        };
+
+
+        try {
+
+            let response = await fetch("http://localhost:5000/api/products", {
+                method: 'POST',
+                body: JSON.stringify(data),
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            })
+
+            let d = await response.json();
+            console.log("d: ", d);
+
+        } catch (e) {
+
+            console.log("err :", e)
+        }
+    }
+
+
+
+    async function deleteProduct() {
+
+        let id = document.getElementById("product_id").value
+
+        let response = await fetch(`http://localhost:5000/api/products/${id}`, {
+
+            method: 'DELETE',
+
+            headers: {
+                "Content-Type": "application/json",
+            },
+
+        })
+    }
+
+
+
+
+    async function UpdateProduct() {
+
+        let data = {
+            id: document.getElementById("id1").value,
+            name: document.getElementById("name1").value,
+            price: document.getElementById("price1").value
+        };
+
+        var Updateid = document.getElementById("id1").value
+        console.log("updateID", Updateid)
+
+
+        try {
+
+            let response = await fetch(`http://localhost:5000/api/products/${Updateid}`, {
+                method: 'PUT',
+                body: JSON.stringify(data),
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            })
+
+            let d = await response.json();
+            console.log("d: ", d);
+
+        } catch (e) {
+
+            console.log("err :", e)
+        }
+
+    }
+
+
+</script>
